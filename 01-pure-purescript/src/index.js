@@ -1,2 +1,2 @@
-const {main} = require("../../output/Main/index");
+const {main} = require("../output/Main/index");
 console.log(main("world"));
