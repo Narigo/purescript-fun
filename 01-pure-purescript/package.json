@@ -1,0 +1,17 @@
+{
+  "name": "01-pure-purescript",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "purs compile src/*.purs src/purs/*.purs",
+    "main": "node src/index.js",
+    "start": "npm run build && npm run main"
+  },
+  "keywords": [],
+  "author": "Joern Bernhardt <jb@campudus.com> (http://www.campudus.com)",
+  "license": "MIT",
+  "devDependencies": {
+    "purescript": "^0.11.6"
+  }
+}
