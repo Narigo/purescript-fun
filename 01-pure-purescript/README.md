@@ -14,3 +14,28 @@ I've been using node v8.1.4 right now, so the `const {main}` destructuring works
 As you can see, setting this up is still quite some hassle especially having the `Prelude` stuff only available through
 `pulp` and `bower`. Due to this, let's find out the basics of `pulp` and how it can be useful for us in the next 
 session.
+
+One thing I've seen while creating the string concatenation foreign was that purescript does not seem to understand ES6.
+Instead of the following code:
+
+```javascript
+// module Simple
+
+exports.concatString = function (a) {
+  return function (b) {
+    return a + b;
+  };
+};
+```
+
+I've tried using this, but it failed:
+
+```javascript
+// module Simple
+
+exports.concatString = a => b => a + b;
+```
+
+It seems there is an open issue about supporting ES6 / ES2015+ etc. Hopefully this will change in the future as I've 
+started to get rid of babel in a couple of projects. Node scripts can do enough right now, the only trouble is using 
+modules right now.
