@@ -51,3 +51,191 @@ couple of new files. Let's analyze, what we got right now:
   is pretty shallow on that regard (it hints that we might want to use the "Eff monad", we first need to figure out what
   that means).
 
+## Writing the first test
+
+The boilerplate is nice to have, so I've thought to just install the `purescript-assert` library as mentioned in the 
+quickstart docs. Wouldn't it be fun to have the `greeting` function being tested and see a few green lights? Well, it 
+turns out that it's not as easy to spot what is wrong.
+
+My first iteration of the test was the following, highly inspired by the [testing example in the quickstart 
+guide](https://github.com/purescript/documentation/blob/master/guides/Getting-Started.md#writing-a-test-suite):
+```purescript
+module Test.Main where
+
+import Prelude
+
+import Test.Assert
+import Main
+
+main = do
+  assert ((greeting "world") == "hello world!")
+```
+
+Even though I installed `purescript-assert` by using `bower i purescript-assert --save`, It failed spectacularly with a 
+lot of warnings / errors.
+```
+$ pulp test
+* Building project in /Users/joern/git/purescript-fun/02-purescript-with-pulp
+Compiling Test.Main
+Warning 1 of 5:
+
+  in module Test.Main
+  at test/Main.purs line 4, column 1 - line 4, column 31
+
+    The import of module Control.Monad.Eff is redundant
+
+
+  See https://github.com/purescript/documentation/blob/master/errors/UnusedImport.md for more information,
+  or to contribute content related to this warning.
+
+Warning 2 of 5:
+
+  in module Test.Main
+  at test/Main.purs line 7, column 1 - line 7, column 12
+
+    Module Main has unspecified imports, consider using the explicit form:
+
+      import Main (greeting)
+
+
+
+  See https://github.com/purescript/documentation/blob/master/errors/ImplicitImport.md for more information,
+  or to contribute content related to this warning.
+
+Warning 3 of 5:
+
+  in module Test.Main
+  at test/Main.purs line 3, column 1 - line 3, column 15
+
+    Module Prelude has unspecified imports, consider using the explicit form:
+
+      import Prelude ((==))
+
+
+
+  See https://github.com/purescript/documentation/blob/master/errors/ImplicitImport.md for more information,
+  or to contribute content related to this warning.
+
+Warning 4 of 5:
+
+  in module Test.Main
+  at test/Main.purs line 6, column 1 - line 6, column 19
+
+    Module Test.Assert has unspecified imports, consider using the explicit form:
+
+      import Test.Assert (assert)
+
+
+
+  See https://github.com/purescript/documentation/blob/master/errors/ImplicitImport.md for more information,
+  or to contribute content related to this warning.
+
+Warning 5 of 5:
+
+  in module Test.Main
+  at test/Main.purs line 9, column 1 - line 10, column 47
+
+    No type declaration was provided for the top-level declaration of main.
+    It is good practice to provide type declarations as a form of documentation.
+    The inferred type of main was:
+                            
+      forall t1.            
+        Eff                 
+          ( assert :: ASSERT
+          | t1              
+          )                 
+          Unit              
+                            
+
+  in value declaration main
+
+  See https://github.com/purescript/documentation/blob/master/errors/MissingTypeDeclaration.md for more information,
+  or to contribute content related to this warning.
+
+
+* Build successful.
+* Running tests...
+/Users/joern/git/purescript-fun/02-purescript-with-pulp/output/Test.Assert/foreign.js:6
+      if (!success) throw new Error(message);
+                    ^
+
+Error: Assertion failed
+    at Object.main (/Users/joern/git/purescript-fun/02-purescript-with-pulp/output/Test.Assert/foreign.js:6:27)
+    at Object.<anonymous> (/private/var/folders/xm/9xrz03ss2rgg5gx81h2y74vw0000gn/T/pulp-test11779-72032-4it08w.92s0v.js:1:84)
+    at Module._compile (module.js:569:30)
+    at Object.Module._extensions..js (module.js:580:10)
+    at Module.load (module.js:503:32)
+    at tryModuleLoad (module.js:466:12)
+    at Function.Module._load (module.js:458:3)
+    at Function.Module.runMain (module.js:605:10)
+    at startup (bootstrap_node.js:158:16)
+    at bootstrap_node.js:575:3
+* ERROR: Subcommand terminated with exit code 1
+```
+
+For me, it was not very obvious what the problem is. First, I got rid of the warnings, by doing the explicit imports as 
+recommended by the output with high hopes seeing my mistake. Changing my test code to the following helped a bit:
+
+```purescript
+module Test.Main where
+
+import Prelude (Unit, (==))
+import Control.Monad.Eff (Eff)
+
+import Test.Assert (ASSERT, assert)
+import Main (greeting)
+
+main :: forall e. Eff (assert :: ASSERT | e) Unit
+main = do
+  assert ((greeting "world") == "hello world!")
+```
+
+Now at least I could see the real error message without the clutter of warnings:
+```
+$ pulp test
+* Building project in /Users/joern/git/purescript-fun/02-purescript-with-pulp
+Compiling Test.Main
+* Build successful.
+* Running tests...
+/Users/joern/git/purescript-fun/02-purescript-with-pulp/output/Test.Assert/foreign.js:6
+      if (!success) throw new Error(message);
+                    ^
+
+Error: Assertion failed
+    at Object.main (/Users/joern/git/purescript-fun/02-purescript-with-pulp/output/Test.Assert/foreign.js:6:27)
+    at Object.<anonymous> (/private/var/folders/xm/9xrz03ss2rgg5gx81h2y74vw0000gn/T/pulp-test11779-72150-8frgjx.whb18.js:1:84)
+    at Module._compile (module.js:569:30)
+    at Object.Module._extensions..js (module.js:580:10)
+    at Module.load (module.js:503:32)
+    at tryModuleLoad (module.js:466:12)
+    at Function.Module._load (module.js:458:3)
+    at Function.Module.runMain (module.js:605:10)
+    at startup (bootstrap_node.js:158:16)
+    at bootstrap_node.js:575:3
+* ERROR: Subcommand terminated with exit code 1
+```
+
+So, the test fails... but why? From JavaScript testing frameworks, you usually get some kind of `diff` or at least which
+assertion failed. Just having `Error: Assertion failed` doesn't really tell me which one and where it failed. If it put 
+the line number of my code into it, I would expect that it really is my code instead of trying to find out if my setup 
+is not 100% correct.
+
+The mistake is clearly that I wrote `"hello world!"` as expectation, but I actually had to assert `"Hello world!"` with 
+a capital `H`. As soon as I changed that, I got the response that all tests pass:
+
+```
+$ pulp test
+* Building project in /Users/joern/git/purescript-fun/02-purescript-with-pulp
+Compiling Test.Main
+* Build successful.
+* Running tests...
+* Tests OK.
+``` 
+
+This looks a lot nicer. Still, the biggest issue I have is that I couldn't see what failed and why. This could be an
+even bigger bummer while testing more complex code. Is there a better testing / assertion library for purescript? 
+Something that gives me a nicer error message?
+
+To conclude this first impression of testing: It's hard to see the errors as a beginner and error messages not yielding 
+the line of code responsible for the failing tests should be better. Or at least documented how to make it better and 
+not recommending a quick way that is really not too helpful.
