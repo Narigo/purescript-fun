@@ -1,10 +1,15 @@
 module Main where
 
 import Prelude
-import Data.Array
+import Control.Monad.Eff (Eff)
+import Control.Monad.Eff.Console (CONSOLE, log)
+import Data.Array (head)
+import Node.Process (PROCESS, argv)
 
-greeting :: Array String -> String
-greeting arr = "Hello " <> (show (head arr)) <> "!"
+greeting :: String -> String
+greeting who = "Hello " <> who <> "!"
 
-main :: Array String -> String
-main arr = greeting arr
+main :: forall eff. Eff (console :: CONSOLE, process :: PROCESS | eff) Unit
+main = do
+  arr <- argv
+  log (greeting (show (head arr)))
