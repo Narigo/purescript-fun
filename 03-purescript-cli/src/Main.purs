@@ -13,7 +13,17 @@ greeting who = "Hello " <> who <> "!"
 getArgs :: Array String -> Maybe (String)
 getArgs args = tail args >>= tail >>= head
 
+getArgsDo :: Array String -> Maybe (String)
+getArgsDo args = do
+  a <- tail args
+  b <- tail a
+  head b
+
+get :: Maybe String -> String
+get (Just str) = str
+get Nothing    = ""
+
 main :: forall eff. Eff (console :: CONSOLE, process :: PROCESS | eff) Unit
 main = do
   arr <- argv
-  log (greeting (show (getArgs arr)))
+  log (greeting (get (getArgsDo arr)))
