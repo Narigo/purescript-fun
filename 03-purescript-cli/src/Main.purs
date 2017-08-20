@@ -1,6 +1,6 @@
 module Main where
 
-import Prelude (Unit, bind, map, (<>), (>>=))
+import Prelude (Unit, bind, map, (<>), (<$>), (>>=))
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE, log)
 import Data.Array (head, tail)
@@ -23,10 +23,17 @@ get :: Maybe String -> String
 get (Just str) = str
 get Nothing    = ""
 
--- main :: forall eff. Eff (console :: CONSOLE, process :: PROCESS | eff) Unit
--- main = do
---   arr <- argv
---   log (greeting (get (getArgsBind arr)))
+mainDo :: forall eff. Eff (console :: CONSOLE, process :: PROCESS | eff) Unit
+mainDo = do
+  arr <- argv
+  log (greeting (get (getArgsBind arr)))
+
+mainMapBind2 :: forall eff. Eff (console :: CONSOLE, process :: PROCESS | eff) Unit
+mainMapBind2 = bind (map greeting (map get (map getArgsBind argv))) log
+
+--| Same as above, >>= is bind, <$> is map.
+mainMapBind :: forall eff. Eff (console :: CONSOLE, process :: PROCESS | eff) Unit
+mainMapBind = greeting <$> get <$> getArgsBind <$> argv >>= log
 
 main :: forall eff. Eff (console :: CONSOLE, process :: PROCESS | eff) Unit
-main = bind (map greeting (map get (map getArgsBind argv))) log
+main = mainMapBind
