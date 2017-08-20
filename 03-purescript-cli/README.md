@@ -67,3 +67,46 @@ able to tell how to do something that is done really simple in Node (`console.lo
 Anyways, this was something I've been struggling with the past days but I think I can now understand the purescript 
 world a bit better. As a "sneak peek", I've already heard something about the `do` notation that it's used as syntactic
 sugar on `map` and `bind`. I'll have a look into this later and see what is meant by that.
+
+## Map, Bind, :type and the PSCI
+
+After struggling with the do-Notation, I think I found a way to make learning things more easy for me. Understanding
+how things work is a lot easier when looking at types and understanding the signature of methods. As said before, the 
+do-Notation is a mix of `map` and `bind` functions. With `:type map` and `:type bind` we can find out the type signature
+of these methods in PSCI (run `pulp psci` to open it):
+
+```
+> :type map
+forall a b f. Functor f => (a -> b) -> f a -> f b
+
+> :type bind
+forall a b m. Bind m => m a -> (a -> m b) -> m b
+```
+
+Looking at these signatures, two words and two letters get my attention. In case of `map`, it is `Functor` and `f`. In 
+case of `bind`, it is `Bind` and `m`.
+
+I always think of functors as something like an array-like container that has a map function. And functions. Well, 
+actually, I'm always reading it up, what it means exactly. It's just a term for "something" that follows a few rules. 
+There is [a quite nice explanation about functors](https://medium.com/@dtinth/what-is-a-functor-dcf510b098b6), which 
+really explains it in a way that I can fully understand the concept. Still, it's a very abstract term and it helps me 
+much more to think of examples. In our case, I think `map` over an array. `f` is the array, `(a -> b)` is the function
+to map over.
+
+Looking at `bind`, I remember that `bind` was more or less the equivalent of `flatMap` in Scala. When looking back at 
+the `map` and functor example, that would mean instead of using a function `(a -> b)`, bind needs a function 
+`(a -> f b)`. Why is it called `m` in case of `Bind`? I believe the `m` stands for "Monad". Monad is another term like 
+functor but following a different set of rules. Or actually just more rules. A monad datatype needs to have a function 
+that lifts a value into a value inside some kind of monadic container. This function can be called `lift`, `return` or, 
+in case of the `Maybe` monad, the `Just` constructor. The `flatMap` or `bind` function requires `(a -> m b)` parameter.
+In this particular case, I'd call `m` another `Maybe` thing. `a` and `b` can actually be some kind of different types,
+but for me it's easier to think of them both as - for example - strings. Feeding a function expecting `(String -> Maybe
+String)` on a `Maybe` feels easier to reason about for me, but you could actually have `()String -> Maybe Int)`, and
+still follow the monad rules/laws, if I understand it correctly.
+
+So to quickly recap after this short journey into some weird fp-vocabulary: Looking at the types helps understanding 
+what a function expects and what will be the result. The variable names are very generic, but mostly because you can do
+a lot of different things with them and the rules allow them.
+
+I will conclude this chapter using command line arguments (run `pulp run -- world` to see a `hello 
+world!`) by definitely advocating to use `pulp psci`and using `:type ...` from there.
