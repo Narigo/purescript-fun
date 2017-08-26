@@ -11,6 +11,10 @@ sum Nil = 0
 sum (x : Nil) = x
 sum (x : xs) = x + (sum xs)
 
+length :: forall a. List a -> Int
+length Nil = 0
+length (x : xs) = 1 + (length xs)
+
 main :: forall e. Eff (console :: CONSOLE | e) Unit
 main = do
   log "Hello sailor!"
