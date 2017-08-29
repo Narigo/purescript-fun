@@ -56,3 +56,21 @@ converting arrays to lists, but I haven't looked too deep into how to pattern ma
 that the developer experience between `List` and `Array` is quite different and `List` seems to be a lot simpler, 
 looking at [answers on pattern matching arrays in 
 purescript](https://stackoverflow.com/questions/42450347/purescript-pattern-match-arrays-of-unknown-length).
+
+### Splitting tests
+
+After implementing two functions and adding tests for them, it became clear that it might be a good idea to split tests.
+I've splitted this into two suites and used `Test.Main.main` to call the methods containing the suites. It doesn't look
+perfect to write as I have to repeat the suites once again in the `main` method, but at least it is possible to split 
+the various tests.
+
+What I don't really like is the fact that `pulp test` warns me about not explicitly setting all imports and letting the
+compiler infer all the types. Especially finding out the correct classes for the imports was a bit harder. Maybe 
+different tooling might be able to help here as the compiler warnings just tell you the type, but not from where to 
+import it.
+
+### Property based testing
+
+The next challenge is to use property based testing. As I mentioned before, I don't want to give up on this approach, it
+is just a bit harder to write and read - at least from my experience in other languages. Anyways, it helps a lot to be 
+sure that the function does what you want in all cases.
