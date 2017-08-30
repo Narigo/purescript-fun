@@ -4,6 +4,8 @@ import Prelude
 
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE)
+import Control.Monad.Eff.Random (RANDOM)
+import Control.Monad.Eff.Exception (EXCEPTION)
 import Control.Monad.Aff.AVar
 import Control.Monad.Free (Free)
 
@@ -25,7 +27,7 @@ main = mainQuickCheck
 
 -- Using QuickCheck
 mainQuickCheck = do
-  quickCheck \xs -> sum xs >= 0
+  quickCheck \xs -> length xs >= 0
 
 
 -- Using Test.Unit

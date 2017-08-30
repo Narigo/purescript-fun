@@ -11,7 +11,7 @@ sum Nil = 0
 sum (x : Nil) = x
 sum (x : xs) = x + (sum xs)
 
-length :: forall a. List a -> Int
+length :: List Int -> Int
 length Nil = 0
 length (x : xs) = 1 + (length xs)
 
