@@ -27,7 +27,7 @@ main = mainQuickCheck
 
 -- Using QuickCheck
 mainQuickCheck = do
-  quickCheck \xs -> length xs >= 0
+  quickCheck \(xs :: List Int) -> length xs >= 0
 
 
 -- Using Test.Unit
