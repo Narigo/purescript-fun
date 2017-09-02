@@ -28,6 +28,9 @@ main = mainQuickCheck
 -- Using QuickCheck
 mainQuickCheck = do
   quickCheck \(xs :: List Int) -> length xs >= 0
+  quickCheck \(xs :: List Char) -> length xs >= 0
+  quickCheck \(xs :: List String) -> length xs >= 0
+  quickCheck \(xs :: List Boolean) -> length xs >= 0
 
 
 -- Using Test.Unit
