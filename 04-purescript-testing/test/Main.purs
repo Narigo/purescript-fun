@@ -1,13 +1,11 @@
 module Test.Main where
 
-import Prelude
+import Prelude (Unit, discard, (>=))
 
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE)
 import Control.Monad.Eff.Random (RANDOM)
 import Control.Monad.Eff.Exception (EXCEPTION)
-import Control.Monad.Aff.AVar
-import Control.Monad.Free (Free)
 
 -- import Test.Unit (suite, test, TestF)
 -- import Test.Unit.Console (TESTOUTPUT)
@@ -15,17 +13,17 @@ import Control.Monad.Free (Free)
 -- import Test.Unit.Main (runTest)
 -- import Test.Unit.Assert as Assert
 
-import Test.QuickCheck
+import Test.QuickCheck (quickCheck)
 
-import Data.List
-import Data.Maybe
-import Main (sum, length)
+import Data.List (List)
+import Main (length)
 
 
--- main :: forall e. Eff (console :: CONSOLE, testOutput :: TESTOUTPUT, avar :: AVAR | e) Unit
+main :: forall e. Eff (console :: CONSOLE, random :: RANDOM, exception :: EXCEPTION | e) Unit
 main = mainQuickCheck
 
 -- Using QuickCheck
+mainQuickCheck :: forall e. Eff (console :: CONSOLE, random :: RANDOM, exception :: EXCEPTION | e) Unit
 mainQuickCheck = do
   quickCheck \(xs :: List Int) -> length xs >= 0
   quickCheck \(xs :: List Char) -> length xs >= 0
