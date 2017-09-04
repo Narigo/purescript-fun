@@ -74,3 +74,36 @@ import it.
 The next challenge is to use property based testing. As I mentioned before, I don't want to give up on this approach, it
 is just a bit harder to write and read - at least from my experience in other languages. Anyways, it helps a lot to be 
 sure that the function does what you want in all cases.
+
+The first iteration of trying quickCheck tests was to make `length :: List Int -> Int` and check it with this function:
+
+```purescript
+mainQuickCheck = do
+  quickCheck \xs -> length xs >= 0
+```
+
+This made `length` a lot less generic. To get it running with different types again, we need to explicitly check the 
+types under test inside the tests, like this:
+
+```purescript
+mainQuickCheck = do
+  quickCheck \(xs :: List Int) -> length xs >= 0
+``` 
+
+We can also add more types to this, by just duplicating the `quickCheck` line and changing the `Int` with different 
+types. As I asked on Twitter how to do this, I got a helpful [tip by Harry Garrod in this 
+thread](https://twitter.com/NarigoDF/status/903021096143872000). It resulted in the now current version which could 
+actually have a lot more tests/checks in the `testWith` function (because of the `do` keyword):
+
+```purescript
+mainQuickCheck :: forall e. Eff (console :: CONSOLE, random :: RANDOM, exception :: EXCEPTION | e) Unit
+mainQuickCheck = do
+  testWith (Proxy :: Proxy Int)
+  testWith (Proxy :: Proxy Char)
+  testWith (Proxy :: Proxy String)
+  testWith (Proxy :: Proxy Boolean)
+
+testWith :: forall a e. Arbitrary a => Proxy a -> Eff (console :: CONSOLE, random :: RANDOM, exception :: EXCEPTION | e) Unit
+testWith _ = do
+  quickCheck \(xs :: List a) -> length xs >= 0
+```
