@@ -2,11 +2,19 @@
 
 Trying out purescript for a bit and blogging about my impression and findings.
 
+I've structured my observations into sessions as I'm trying to learn and build something with purescript. Right now, 
+there are a few sessions available:
+
+* [01-pure-purescript](./01-pure-purescript)
+* [02-purescript-with-pulp](./02-purescript-with-pulp)
+* [03-purescript-cli](./03-purescript-cli)
+* [04-purescript-testing](./04-purescript-testing)
+
 ## First impression
 
 Installing purescript seems like it should be just `npm install purescript`, maybe with `-g`, even though I dislike 
 installing packages globally and not per project. As you create dependencies to things that other users checking out the
-project don't necessarily have (or have a different version of), this always may lead to problems.
+project don't necessarily have (or have a different version of), this may always be a source of weird problems.
 
 The beginner tutorials want you to install `pulp` and `bower`. If I understood this correctly, `pulp` is a build tool 
 and provides quite a few data structures (plus `Prelude`). It downloads them from bower, as bower has a different 
