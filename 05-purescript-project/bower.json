@@ -1,0 +1,11 @@
+{
+  "name": "05-purescript-project",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "output"
+  ],
+  "dependencies": {},
+  "devDependencies": {}
+}
