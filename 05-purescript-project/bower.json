@@ -6,6 +6,9 @@
     "bower_components",
     "output"
   ],
-  "dependencies": {},
+  "dependencies": {
+    "purescript-console": "^3.0.0",
+    "purescript-prelude": "^3.1.0"
+  },
   "devDependencies": {}
 }
