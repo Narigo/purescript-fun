@@ -1,22 +1,25 @@
 module Main where
 
-import Prelude
-import Data.List
+import Prelude (Unit, map, show, (<>))
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE, log)
 
-main :: forall e. Eff (console :: CONSOLE | e) Unit
-main = do
-  log (showTable {
+myTable :: Table
+myTable =
+  {
     columns: [
       {id: 1, name: "column1"},
       {id: 2, name: "column2"}
     ],
     rows: [
       {id: 1, cells: ["cell11", "cell12"]},
-      {id: 2, cells: ["cell21","cell22"]}
+      {id: 2, cells: ["cell21", "cell22"]}
     ]
-  })
+  }
+
+main :: forall e. Eff (console :: CONSOLE | e) Unit
+main = do
+  log (showTable myTable)
 
 showTable :: Table -> String
 showTable table = showColumns table.columns <> "\n" <> showRows table.rows
