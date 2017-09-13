@@ -1,57 +1,26 @@
 module Main where
 
-import Prelude (Unit, map, show, (<>))
+import Prelude (Unit)
+import Data.Vec (empty, (+>)) as Vec
+import Data.Maybe (Maybe(..))
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE, log)
-
-myTable :: Table
-myTable =
-  {
-    columns: [
-      {id: 1, name: "column1"},
-      {id: 2, name: "column2"}
-    ],
-    rows: [
-      {id: 1, cells: ["cell11", "cell12"]},
-      {id: 2, cells: ["cell21", "cell22"]}
-    ]
-  }
+import Table (addColumn, addRow, showTable, empty) as Table
 
 main :: forall e. Eff (console :: CONSOLE | e) Unit
 main = do
-  log (showTable myTable)
+  log (Table.showTable (Table.addRow (Table.addColumn Table.empty "first") ((Just "cell1") Vec.+> Vec.empty)))
 
-showTable :: Table -> String
-showTable table = showColumns table.columns <> "\n" <> showRows table.rows
 
-showColumns :: Array Column -> String
-showColumns columns = "" <> show (map showColumn columns)
-
-showRows :: Array Row -> String
-showRows row = "" <> show (map showRow row)
-
-showColumn :: Column -> String
-showColumn column = "" <> show column.id <> ": " <> column.name
-
-showRow :: Row -> String
-showRow row = "" <> show row.id <> ": " <> show (map showCell row.cells)
-
-showCell :: String -> String
-showCell cell = "Cell(" <> show cell <> ")"
-
-type Column = {
-    id :: Int,
-    name :: String
-  }
-
-type Cell = String
-
-type Row = {
-    id :: Int,
-    cells :: Array Cell
-  }
-
-type Table = {
-    columns :: Array Column,
-    rows :: Array Row
-  }
+-- myTable :: Table
+-- myTable =
+--   {
+--     columns: fromArray [
+--       {id: 1, name: "column1"},
+--       {id: 2, name: "column2"}
+--     ],
+--     rows: [
+--       {id: 1, cells: fromArray ["cell11", "cell12"]},
+--       {id: 2, cells: fromArray ["cell21", "cell22"]}
+--     ]
+--   }
