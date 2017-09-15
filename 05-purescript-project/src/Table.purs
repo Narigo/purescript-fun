@@ -13,12 +13,18 @@ import Data.List (List(..))
 import Data.Vec (Vec, (+>))
 import Data.Vec (empty) as Vec
 
-newtype Table s = Table
-  { columns :: Vec s Column
-  , rows :: List (Vec s (Maybe String))
+newtype Table size = Table
+  { columns :: Columns size
+  , rows :: List (Vec size (Maybe String))
   }
 
-type Column = String
+type Columns size = Vec size Column
+
+type Column =
+  { id :: Int
+  , name :: String
+  , kind :: String
+  }
 
 empty :: Table D0
 empty = Table
@@ -45,7 +51,7 @@ showColumns :: forall size. Nat size => Vec size Column -> String
 showColumns cols = "Columns(" <> (show (map (showColumn) cols)) <> ")"
 
 showColumn :: Column -> String
-showColumn col = col
+showColumn col = "" <> (show col.id) <> ":" <> col.name <> "[" <> col.kind <> "]"
 
 showRow :: forall size. List (Vec size (Maybe String)) -> String
 showRow row = show (map (\x -> "row") row)

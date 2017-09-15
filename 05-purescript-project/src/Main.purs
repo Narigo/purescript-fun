@@ -5,11 +5,11 @@ import Data.Vec (empty, (+>)) as Vec
 import Data.Maybe (Maybe(..))
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE, log)
-import Table (addColumn, addRow, showTable, empty) as Table
+import Table (addColumn, addRow, showTable, empty)
 
 main :: forall e. Eff (console :: CONSOLE | e) Unit
 main = do
-  log (Table.showTable (Table.addRow (Table.addColumn Table.empty "first") ((Just "cell1") Vec.+> Vec.empty)))
+  log (showTable (addRow (addColumn empty {id: 1, name: "first", kind: "String"}) ((Just "cell1") Vec.+> Vec.empty)))
 
 
 -- myTable :: Table
