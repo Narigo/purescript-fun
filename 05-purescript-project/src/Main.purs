@@ -7,7 +7,7 @@ import Data.Maybe (Maybe(..))
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE, log)
 import Table (addColumn, addRow, empty)
-import Columns (Column(..))
+import Columns (Column(..), ColumnType(Date))
 
 main :: forall e. Eff (console :: CONSOLE | e) Unit
 main = do
@@ -17,5 +17,5 @@ column :: Column
 column = Column
   { id: 1
   , name: "first"
-  , kind: "String"
+  , kind: Date
   }
