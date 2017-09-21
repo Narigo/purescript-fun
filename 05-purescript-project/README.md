@@ -23,8 +23,9 @@ We have to solve two problems: First, we have to find a way to convert from a sp
 cell type (`Cell X`), where `Cell` could actually be a simple `Maybe` for now. Second, we need to have a list consisting
 of multiple `Column X/Y/Z` and have all rows be of `Cell X/Y/Z`, depending on the ordering of the columns.
 
-A type class could give us the converter method needed from `Column X` to `Cell X`. So if `X` would be `Int`, `Cell Int` could be `Maybe Int` or if `X` were `List String`, the resulting `Cell` should be of type `List String` but
-initialize with an empty list.
+A type class could give us the converter method needed from `Column X` to `Cell X`. So if `X` would be `Int`, `Cell Int`
+could be `Maybe Int` or if `X` were `List String`, the resulting `Cell` should be of type `List String` but initialize
+with an empty list.
 
 For the second problem, having `Column X : Column Y : Column Z : Nil`, we might be able to use the concept of `HList`,
 but we need to create the converter for `Column X : Column Y : Column Z : Nil` to `Cell X : Cell Y : Cell Z : Nil`.
