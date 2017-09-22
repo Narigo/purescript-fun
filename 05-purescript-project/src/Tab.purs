@@ -9,19 +9,17 @@ import Data.List
 import Data.Typelevel.Num
 
 class Col a where
-  id :: Int
-  name :: String
-  kind :: String
+  typeInfo :: a
 
 type Cell a = Maybe a
 
 class Conv a where
   conv :: Col a => a -> Cell a
 
-instance convAll :: Conv a where
+instance convAny :: Col a => Conv a where
   conv _ x = Just x
 
-newtype Table size = Table
-  { columns :: Vec size (Col _)
-  , rows :: List (Vec size (Cell _))
+newtype Table size cols cells = Table
+  { columns :: Vec size cols
+  , rows :: List (Vec size cells)
   }
