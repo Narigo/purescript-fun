@@ -8,16 +8,16 @@ import Data.Vec
 import Data.List
 import Data.Typelevel.Num
 
-class Col a where
+class ColType a where
   kind :: a
 
-instance stringCol :: Col String where
+instance stringCol :: ColType String where
   kind = ""
 
 type Cell a = Maybe a
 
 class Conv a where
-  conv :: Col a => a -> Cell a
+  conv :: ColType a => a -> Cell a
 
 instance convAny :: Conv a where
   conv x = Just x
