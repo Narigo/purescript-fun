@@ -1,5 +1,8 @@
 module Tab
   ( Cell
+  , Col
+  , class ColType
+  , kind
   ) where
 
 import Prelude
@@ -7,6 +10,12 @@ import Data.Maybe (Maybe(..))
 import Data.Vec
 import Data.List
 import Data.Typelevel.Num
+
+type Col x = ColType x =>
+  { id :: Int
+  , name :: String
+  , kind :: x
+  }
 
 class ColType a where
   kind :: a
