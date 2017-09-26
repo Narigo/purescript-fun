@@ -3,6 +3,7 @@ module Tab
   , Col
   , class ColType
   , kind
+  , Tab
   ) where
 
 import Prelude
@@ -31,7 +32,7 @@ class Conv a where
 instance convAny :: Conv a where
   conv x = Just x
 
-newtype Table size cols cells = Table
+newtype Tab size cols cells = Table
   { columns :: Vec size cols
   , rows :: List (Vec size cells)
   }
