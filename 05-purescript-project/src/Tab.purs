@@ -9,6 +9,7 @@ module Tab
 import Prelude
 import Data.Maybe (Maybe(..))
 import Data.Vec
+import Data.Vec (empty) as Vec
 import Data.List
 import Data.Typelevel.Num
 
@@ -35,4 +36,10 @@ instance convAny :: Conv a where
 newtype Tab size cols cells = Table
   { columns :: Vec size cols
   , rows :: List (Vec size cells)
+  }
+
+empty :: Tab D0 (Vec D0) List
+empty = Tab
+  { columns : Vec.empty
+  , rows : Nil
   }
