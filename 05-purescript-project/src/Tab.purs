@@ -9,9 +9,9 @@ module Tab
 import Prelude
 import Data.Maybe (Maybe(..))
 import Data.Vec
-import Data.Vec (empty) as Vec
+import Data.Vec (empty, snoc) as Vec
 import Data.List
-import Data.Typelevel.Num
+import Data.Typelevel.Num (class Nat, class Succ, D0)
 
 type Col x = ColType x =>
   { id :: Int
@@ -33,13 +33,19 @@ class Conv a where
 instance convAny :: Conv a where
   conv x = Just x
 
-newtype Tab size cols cells = Table
+newtype Tab size cols cells = Tab
   { columns :: Vec size cols
   , rows :: List (Vec size cells)
   }
 
-empty :: Tab D0 (Vec D0) List
+empty :: forall cols rows. Tab D0 cols rows
 empty = Tab
   { columns : Vec.empty
   , rows : Nil
+  }
+
+-- addColumn :: forall s0 s1 c0 c1 ck r0 r1. Succ s0 s1 => ColType ck => Tab s0 c0 r0 -> Col ck -> Tab s1 c1 r1
+addColumn (Tab table) column = Tab
+  { columns : Vec.snoc column table.columns
+  , rows : map (\row -> Vec.snoc Nothing row) table.rows
   }
