@@ -44,8 +44,13 @@ empty = Tab
   , rows : Nil
   }
 
--- addColumn :: forall s0 s1 c0 c1 ck r0 r1. Succ s0 s1 => ColType ck => Tab s0 c0 r0 -> Col ck -> Tab s1 c1 r1
+-- addColumn :: forall s0 c0 r0 s1 c1 r1 ck. Tab s0 c0 r0 => Tab s1 c1 r1 => ColType ck => Tab s0 c0 r0 -> Col ck -> Tab s1 c1 r1
 addColumn (Tab table) column = Tab
   { columns : Vec.snoc column table.columns
   , rows : map (\row -> Vec.snoc Nothing row) table.rows
+  }
+
+addRow (Tab table) row = Tab
+  { columns : table.columns
+  , rows : (Cons row table.rows)
   }
