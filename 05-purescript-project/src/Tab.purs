@@ -4,6 +4,9 @@ module Tab
   , class ColType
   , kind
   , Tab
+  , addColumn
+  , addRow
+  , empty
   ) where
 
 import Prelude

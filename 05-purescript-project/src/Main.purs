@@ -6,7 +6,7 @@ import Data.Vec ((+>))
 import Data.Vec (empty) as Vec
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE, log)
-import Table (addColumn, addRow, empty)
+import Tab (addColumn, addRow, empty)
 import Columns (Column(..), ColumnType, intType, i, stringType, s)
 
 main :: forall e. Eff (console :: CONSOLE | e) Unit
