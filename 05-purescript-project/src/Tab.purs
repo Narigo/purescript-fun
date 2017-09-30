@@ -50,6 +50,7 @@ addColumn (Tab table) column = Tab
   , rows : map (\row -> Vec.snoc Nothing row) table.rows
   }
 
+addRow :: forall s0 c0 r. Tab s0 c0 r -> Vec s0 r -> Tab s0 c0 r
 addRow (Tab table) row = Tab
   { columns : table.columns
   , rows : (Cons row table.rows)
