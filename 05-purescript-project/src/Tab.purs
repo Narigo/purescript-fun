@@ -41,6 +41,9 @@ newtype Tab size cols cells = Tab
   , rows :: List (Vec size cells)
   }
 
+instance showTab :: Nat size => Show (Tab size cols cells) where
+  show (Tab tab) = "Tab(Columns(" <> (show (map (show) tab.columns)) <> "), Rows(" <> (show tab.rows) <> ")"
+
 empty :: forall cols rows. Tab D0 cols rows
 empty = Tab
   { columns : Vec.empty
