@@ -7,6 +7,7 @@ module Tab
   , addColumn
   , addRow
   , empty
+  , stringCol
   ) where
 
 import Prelude
