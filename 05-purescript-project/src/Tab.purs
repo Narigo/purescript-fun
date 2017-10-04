@@ -7,7 +7,6 @@ module Tab
   , addColumn
   , addRow
   , empty
-  , stringCol
   ) where
 
 import Prelude
@@ -26,9 +25,6 @@ type Col x = ColType x =>
 class ColType a where
   kind :: a
 
-instance stringCol :: ColType String where
-  kind = ""
-
 type Cell a = Maybe a
 
 class Conv a where
@@ -42,7 +38,7 @@ newtype Tab size cols cells = Tab
   , rows :: List (Vec size cells)
   }
 
-instance showTab :: Nat size => Show (Tab size cols cells) where
+instance showTab :: (Nat size, Show cols, Show cells) => Show (Tab size cols cells) where
   show (Tab tab) = "Tab(Columns(" <> (show (map (show) tab.columns)) <> "), Rows(" <> (show tab.rows) <> ")"
 
 empty :: forall cols rows. Tab D0 cols rows
@@ -51,7 +47,7 @@ empty = Tab
   , rows : Nil
   }
 
--- addColumn :: forall s0 c0 r0 s1 c1 r1 ck. Tab s0 c0 r0 => Tab s1 c1 r1 => ColType ck => Tab s0 c0 r0 -> Col ck -> Tab s1 c1 r1
+-- addColumn :: forall s0 c0 r0 s1 c1 r1 ck. (Nat s0, Nat s1, Tab s0 c0 r0, Tab s1 c1 r1, ColType ck) => Tab s0 c0 r0 -> Col ck -> Tab s1 c1 r1
 addColumn (Tab table) column = Tab
   { columns : Vec.snoc column table.columns
   , rows : map (\row -> Vec.snoc Nothing row) table.rows
