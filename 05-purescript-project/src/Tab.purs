@@ -10,17 +10,19 @@ module Tab
   , createColumn
   ) where
 
-import Prelude
-import Data.Maybe (Maybe(..))
-import Data.Vec
-import Data.Vec (empty, snoc) as Vec
 import Data.List
-import Data.Typelevel.Num (class Nat, class Succ, D0)
+import Data.Vec
+import Prelude
 
-type Col x = ColType x =>
+import Data.Maybe (Maybe(..))
+import Data.Typelevel.Num (class Nat, class Succ, D0)
+import Data.Vec (empty, snoc) as Vec
+import Partial.Unsafe (unsafePartial)
+
+newtype Col x = Col
   { id :: Int
   , name :: String
-  , kind :: x
+  , kind :: Maybe x
   }
 
 class ColType a where
@@ -29,24 +31,17 @@ class ColType a where
 instance stringCol :: ColType String where
   kind = ""
 
-instance numberCol :: ColType Number where
+instance intCol :: ColType Int where
   kind = 0
 
-createColumn :: Int -> String -> String
-createColumn id name "string" =
+instance showStringCol :: Show (Col String) where
+  show c = "string column"
+
+createColumn :: forall x. ColType x => x -> Int -> String -> Col x
+createColumn colTypeTag id name = Col
   { id : id
   , name : name
-  , kind : stringCol
-  }
-createColumn id name "number" =
-  { id : id
-  , name : name
-  , kind : numberCol
-  }
-createColumn id name _ =
-  { id : id
-  , name : name
-  , kind : stringCol
+  , kind : Nothing
   }
 
 type Cell a = Maybe a
@@ -71,7 +66,7 @@ empty = Tab
   , rows : Nil
   }
 
--- addColumn :: forall s0 c0 r0 s1 c1 r1 ck. (Nat s0, Nat s1, Tab s0 c0 r0, Tab s1 c1 r1, ColType ck) => Tab s0 c0 r0 -> Col ck -> Tab s1 c1 r1
+addColumn :: forall s0 c0 r0 s1 c1 r1 ck. Nat s0 => Nat s1 => ColType ck => Tab s0 c0 r0 -> Col ck -> Tab s1 c1 r1
 addColumn (Tab table) column = Tab
   { columns : Vec.snoc column table.columns
   , rows : map (\row -> Vec.snoc Nothing row) table.rows
