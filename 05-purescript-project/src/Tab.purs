@@ -7,6 +7,7 @@ module Tab
   , addColumn
   , addRow
   , empty
+  , createColumn
   ) where
 
 import Prelude
@@ -24,6 +25,29 @@ type Col x = ColType x =>
 
 class ColType a where
   kind :: a
+
+instance stringCol :: ColType String where
+  kind = ""
+
+instance numberCol :: ColType Number where
+  kind = 0
+
+createColumn :: Int -> String -> String
+createColumn id name "string" =
+  { id : id
+  , name : name
+  , kind : stringCol
+  }
+createColumn id name "number" =
+  { id : id
+  , name : name
+  , kind : numberCol
+  }
+createColumn id name _ =
+  { id : id
+  , name : name
+  , kind : stringCol
+  }
 
 type Cell a = Maybe a
 
