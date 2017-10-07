@@ -12,6 +12,7 @@ module Tab
 
 import Data.List
 import Data.Vec
+import HList
 import Prelude
 
 import Data.Maybe (Maybe(..))
@@ -52,24 +53,24 @@ class Conv a where
 instance convAny :: Conv a where
   conv x = Just x
 
-newtype Tab size cols cells = Tab
-  { columns :: Vec size cols
-  , rows :: List (Vec size cells)
+newtype Tab cols = Tab
+  { columns :: HList cols
+  , rows :: List (Cells cols)
   }
 
 instance showTab :: (Nat size, Show cols, Show cells) => Show (Tab size cols cells) where
   show (Tab tab) = "Tab(Columns(" <> (show (map (show) tab.columns)) <> "), Rows(" <> (show tab.rows) <> ")"
 
-empty :: forall cols rows. Tab D0 cols rows
+empty :: Tab HNil
 empty = Tab
-  { columns : Vec.empty
+  { columns : HNil
   , rows : Nil
   }
 
 addColumn :: forall s0 c0 r0 s1 c1 r1 ck. Nat s0 => Nat s1 => ColType ck => Tab s0 c0 r0 -> Col ck -> Tab s1 c1 r1
 addColumn (Tab table) column = Tab
-  { columns : Vec.snoc column table.columns
-  , rows : map (\row -> Vec.snoc Nothing row) table.rows
+  { columns : HList.snoc column table.columns
+  , rows : map (\row -> HList.snoc Nothing row) table.rows
   }
 
 addRow :: forall s0 c0 r. Tab s0 c0 r -> Vec s0 r -> Tab s0 c0 r
