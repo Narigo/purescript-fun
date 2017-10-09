@@ -54,12 +54,12 @@ class Conv a where
 instance convAny :: Conv a where
   conv x = Just x
 
-newtype Tab cols = Tab
+newtype Tab cols cells = Tab
   { columns :: cols
-  , rows :: List (Cells cols)
+  , rows :: List cells
   }
 
-instance showTab :: (Nat size, Show cols, Show cells) => Show (Tab size cols cells) where
+instance showTab :: (Nat size, Show cols, HList cols, Show cells) => Show (Tab cols cells) where
   show (Tab tab) = "Tab(Columns(" <> (show (map (show) tab.columns)) <> "), Rows(" <> (show tab.rows) <> ")"
 
 empty :: Tab HList.HNil
@@ -68,13 +68,13 @@ empty = Tab
   , rows : Nil
   }
 
-addColumn :: forall s0 c0 r0 s1 c1 r1 ck. Nat s0 => Nat s1 => ColType ck => Tab s0 c0 r0 -> Col ck -> Tab s1 c1 r1
+addColumn :: forall c0 r0 c1 r1 ck. ColType ck => Tab c0 r0 -> Col ck -> Tab c1 r1
 addColumn (Tab table) column = Tab
   { columns : HList.cons column table.columns
   , rows : map (\row -> HList.cons Nothing row) table.rows
   }
 
-addRow :: forall s0 c0 r. Tab s0 c0 r -> Vec s0 r -> Tab s0 c0 r
+addRow :: forall c0 cells. Tab c0 cells -> cells -> Tab c0 cells
 addRow (Tab table) row = Tab
   { columns : table.columns
   , rows : (Cons row table.rows)
