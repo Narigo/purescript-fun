@@ -23,4 +23,4 @@ empty :: HNil
 empty = unit
 
 map :: forall a b l. (a -> b) -> HCons a l -> HCons b l
-map f h t = cons (f h) t
+map fn (Tuple a b) = cons (fn a) b
