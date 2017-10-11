@@ -1,26 +1,21 @@
 module HList
-  ( HNil
-  , HCons
-  , class HList
-  , append
+  ( HList
   , cons
   , empty
   ) where
 
-import Data.Tuple (Tuple(..))
+import Data.Tuple.Nested (Tuple2)
 import Prelude (Unit, unit)
 
-type HNil = Unit
-type HCons h t = Tuple h t
+data HList h l = HNil | HList h l
 
-class HList x where
-  append :: forall h. h -> HCons h x
+cons :: forall a b l1 l2. a -> HList a l1 -> HList b l2
+cons a HNil = HList a HNil
+cons a (HList b t) = HList a (HList b t)
 
-cons :: forall a l. a -> l -> HCons a l
-cons a l = Tuple a l
+empty :: forall a b. HList a b
+empty = HNil
 
-empty :: HNil
-empty = unit
-
-map :: forall a b l. (a -> b) -> HCons a l -> HCons b l
-map fn (Tuple a b) = cons (fn a) b
+map :: forall a b l1 l2. (a -> b) -> HList l1 -> HList l2
+map fn (HList a (HList b t)) = cons (fn a) (map fn (HList b t))
+map fn (HList a HNil) = cons (fn a) HNil
