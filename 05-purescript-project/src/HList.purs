@@ -4,20 +4,17 @@ module HList
   , empty
   ) where
 
-import Data.Tuple.Nested (Tuple2)
 import Prelude (Unit, unit)
 
-data HList a = HNil | HCons a HList _
+data HList a l = HNil | HCons a l
 
--- data HList h l = HNil | HList h (HList l)
-
-cons :: forall a b l1 l2. a -> HList a l1 -> HList b l2
+cons :: forall a b l1. a -> HList b l1 -> HList a (HList b l1)
 cons a HNil = HCons a HNil
-cons a (HCons b t) = HCons a (HCons b t)
+cons a (HCons b l) = HCons a (HCons b l)
 
-empty :: forall a b. HList a b
+empty :: forall a l. HList a l
 empty = HNil
 
-map :: forall a b l1 l2. (a -> b) -> HList l1 -> HList l2
-map fn (HCons a (HCons b t)) = cons (fn a) (map fn (HCons b t))
-map fn (HCons a HNil) = cons (fn a) HNil
+map :: forall a b l1 l2. (a -> b) -> HList a l1 -> HList b l2
+map fn (HNil) = HNil
+map fn (HCons a l) = HCons (fn a) (map fn l)
