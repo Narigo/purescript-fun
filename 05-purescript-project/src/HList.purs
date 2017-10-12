@@ -7,15 +7,17 @@ module HList
 import Data.Tuple.Nested (Tuple2)
 import Prelude (Unit, unit)
 
-data HList h l = HNil | HList h l
+data HList a = HNil | HCons a HList _
+
+-- data HList h l = HNil | HList h (HList l)
 
 cons :: forall a b l1 l2. a -> HList a l1 -> HList b l2
-cons a HNil = HList a HNil
-cons a (HList b t) = HList a (HList b t)
+cons a HNil = HCons a HNil
+cons a (HCons b t) = HCons a (HCons b t)
 
 empty :: forall a b. HList a b
 empty = HNil
 
 map :: forall a b l1 l2. (a -> b) -> HList l1 -> HList l2
-map fn (HList a (HList b t)) = cons (fn a) (map fn (HList b t))
-map fn (HList a HNil) = cons (fn a) HNil
+map fn (HCons a (HCons b t)) = cons (fn a) (map fn (HCons b t))
+map fn (HCons a HNil) = cons (fn a) HNil
