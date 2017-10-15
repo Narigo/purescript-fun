@@ -1,5 +1,5 @@
 module HList
-  ( HList
+  ( HList(..)
   , cons
   , empty
   ) where
@@ -15,6 +15,6 @@ cons a (HCons b l) = HCons a (HCons b l)
 empty :: forall a l. HList a l
 empty = HNil
 
-map :: forall a b l1 l2. (a -> b) -> HList a l1 -> HList b l2
-map fn (HNil) = HNil
-map fn (HCons a l) = HCons (fn a) (map fn l)
+-- map :: forall a b l1 l2. (a -> b) -> HList a l1 -> HList b l2
+-- map fn (HNil) = HNil
+-- map fn (HCons a l) = HCons (fn a) (map fn l)

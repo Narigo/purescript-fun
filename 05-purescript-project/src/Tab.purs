@@ -2,11 +2,11 @@ module Tab
   ( Cell
   , Col
   , class ColType
-  , kind
+  , show
   , Tab
-  , addColumn
-  , addRow
-  , empty
+  -- , addColumn
+  -- , addRow
+  -- , empty
   , createColumn
   ) where
 
@@ -15,35 +15,36 @@ import Data.Vec
 import Prelude
 
 import Data.Maybe (Maybe(..))
+import Data.Typelevel.Bool (True)
 import Data.Typelevel.Num (class Nat, class Succ, D0)
 import Data.Vec (empty, snoc) as Vec
-import HList (class HList)
+import HList (HList(..))
 import HList as HList
 import Partial.Unsafe (unsafePartial)
 
 newtype Col x = Col
   { id :: Int
   , name :: String
-  , kind :: Maybe x
+  , kind :: x
   }
 
 class ColType a where
-  kind :: a
+  show :: a -> String
 
 instance stringCol :: ColType String where
-  kind = ""
+  show a = "String"
 
 instance intCol :: ColType Int where
-  kind = 0
+  show a = "Int"
 
 instance showStringCol :: Show (Col String) where
-  show c = "string column"
+  show (Col c) = "Column(" <> show c.id <> ", " <> c.name <> ", " <> show c.kind <> ")"
 
 createColumn :: forall x. ColType x => x -> Int -> String -> Col x
 createColumn colTypeTag id name = Col
   { id : id
   , name : name
-  , kind : Nothing
+  , kind : colTypeTag
   }
 
 type Cell a = Maybe a
@@ -59,23 +60,23 @@ newtype Tab cols cells = Tab
   , rows :: List cells
   }
 
-instance showTab :: (Nat size, Show cols, HList cols, Show cells) => Show (Tab cols cells) where
-  show (Tab tab) = "Tab(Columns(" <> (show (map (show) tab.columns)) <> "), Rows(" <> (show tab.rows) <> ")"
+-- instance showTab :: (Nat size, Show cols, HList cols, Show cells) => Show (Tab cols cells) where
+--   show (Tab tab) = "Tab(Columns(" <> (show (map (show) tab.columns)) <> "), Rows(" <> (show tab.rows) <> ")"
 
-empty :: Tab HList.HNil
-empty = Tab
-  { columns : HList.empty
-  , rows : Nil
-  }
-
-addColumn :: forall c0 r0 c1 r1 ck. ColType ck => Tab c0 r0 -> Col ck -> Tab c1 r1
-addColumn (Tab table) column = Tab
-  { columns : HList.cons column table.columns
-  , rows : map (\row -> HList.cons Nothing row) table.rows
-  }
-
-addRow :: forall c0 cells. Tab c0 cells -> cells -> Tab c0 cells
-addRow (Tab table) row = Tab
-  { columns : table.columns
-  , rows : (Cons row table.rows)
-  }
+-- empty :: Tab
+-- empty = Tab
+--   { columns : HList.empty
+--   , rows : Nil
+--   }
+--
+-- addColumn :: forall c0 r0 c1 r1 ck. ColType ck => Tab c0 r0 -> Col ck -> Tab c1 r1
+-- addColumn (Tab table) column = Tab
+--   { columns : HList.cons column table.columns
+--   , rows : map (\row -> HList.cons Nothing row) table.rows
+--   }
+--
+-- addRow :: forall c0 cells. Tab c0 cells -> cells -> Tab c0 cells
+-- addRow (Tab table) row = Tab
+--   { columns : table.columns
+--   , rows : (Cons row table.rows)
+--   }
