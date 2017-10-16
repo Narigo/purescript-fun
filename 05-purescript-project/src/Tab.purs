@@ -2,7 +2,7 @@ module Tab
   ( Cell
   , Col
   , class ColType
-  , show
+  , kindOf
   , Tab
   -- , addColumn
   -- , addRow
@@ -29,16 +29,15 @@ newtype Col x = Col
   }
 
 class ColType a where
-  show :: a -> String
+  kindOf :: Col a -> String
 
 instance stringCol :: ColType String where
-  show a = "String"
-
+  kindOf c = "String"
 instance intCol :: ColType Int where
-  show a = "Int"
+  kindOf c = "Int"
 
 instance showStringCol :: Show (Col String) where
-  show (Col c) = "Column(" <> show c.id <> ", " <> c.name <> ", " <> show c.kind <> ")"
+  show (col@Col c) = "Column(" <> show c.id <> ", " <> c.name <> ", " <> kindOf col <> ")"
 
 createColumn :: forall x. ColType x => x -> Int -> String -> Col x
 createColumn colTypeTag id name = Col
