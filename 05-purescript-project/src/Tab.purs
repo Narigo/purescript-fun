@@ -54,9 +54,9 @@ class Conv a where
 instance convAny :: Conv a where
   conv x = Just x
 
-newtype Tab cols cells = Tab
-  { columns :: cols
-  , rows :: List cells
+newtype Tab head tail = Tab
+  { columns :: HList head tail
+  , rows :: List (HList (head) (tail)) -- something like (ToRowMap head) (ToRowMap tail) ?
   }
 
 -- instance showTab :: (Nat size, Show cols, HList cols, Show cells) => Show (Tab cols cells) where
