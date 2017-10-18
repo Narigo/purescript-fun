@@ -4,9 +4,9 @@ module Tab
   , class ColType
   , kindOf
   , Tab
-  -- , addColumn
+  , addColumn
   -- , addRow
-  -- , empty
+  , empty
   , createColumn
   ) where
 
@@ -18,7 +18,7 @@ import Data.Maybe (Maybe(..))
 import Data.Typelevel.Bool (True)
 import Data.Typelevel.Num (class Nat, class Succ, D0)
 import Data.Vec (empty, snoc) as Vec
-import HList (HList(..))
+import HList (HList(..), cons)
 import HList as HList
 import Partial.Unsafe (unsafePartial)
 
@@ -46,6 +46,10 @@ createColumn colTypeTag id name = Col
   , kind : colTypeTag
   }
 
+addColumn :: forall a b l. Tab _ _ _ -> Col a -> HList (Col b) l -> Tab _ _ _
+addColumn (Tab tab) col HNil = Tab {columns: HCons col HNil, rows: (map tab.rows (cons Nothing))}
+addColumn (Tab tab) col list = Tab {columns: HCons col list, rows: (map tab.rows (cons Nothing))}
+
 type Cell a = Maybe a
 
 class Conv a where
@@ -54,19 +58,19 @@ class Conv a where
 instance convAny :: Conv a where
   conv x = Just x
 
-newtype Tab head tail = Tab
-  { columns :: HList head tail
-  , rows :: List (HList (head) (tail)) -- something like (ToRowMap head) (ToRowMap tail) ?
+newtype Tab head tail rowTail = Tab
+  { columns :: HList (Col head) tail
+  , rows :: List (HList (Cell head) (rowTail)) -- something like (ToRowMap head) (ToRowMap tail) ?
   }
 
 -- instance showTab :: (Nat size, Show cols, HList cols, Show cells) => Show (Tab cols cells) where
 --   show (Tab tab) = "Tab(Columns(" <> (show (map (show) tab.columns)) <> "), Rows(" <> (show tab.rows) <> ")"
 
--- empty :: Tab
--- empty = Tab
---   { columns : HList.empty
---   , rows : Nil
---   }
+empty :: Tab _ _ _
+empty = Tab
+  { columns : HList.empty
+  , rows : Nil
+  }
 --
 -- addColumn :: forall c0 r0 c1 r1 ck. ColType ck => Tab c0 r0 -> Col ck -> Tab c1 r1
 -- addColumn (Tab table) column = Tab
