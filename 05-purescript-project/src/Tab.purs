@@ -46,8 +46,12 @@ createColumn colTypeTag id name = Col
   , kind : colTypeTag
   }
 
-addColumn :: forall a b l. Tab b l -> Col a -> Tab a (HList (Col b) l)
-addColumn (Tab tab) col = Tab {columns: HCons col tab.columns, rows: Nil}
+-- TODO Removes all rows for now to get it working at all...
+addColumn :: forall a b l. Tab a l -> Col b -> Tab b (HList a l)
+addColumn (Tab tab) (Col col) = Tab
+  { columns: (HList.cons (createColumn col.kind col.id col.name) tab.columns)
+  , rows: Nil
+  }
 
 type Cell a = Maybe a
 

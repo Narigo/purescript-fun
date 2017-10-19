@@ -8,7 +8,7 @@ import Prelude (Unit, unit)
 
 data HList a l = HNil | HCons a l
 
-cons :: forall a b l1. a -> HList b l1 -> HList a (HList b l1)
+cons :: forall a b l. a -> HList b l -> HList a (HList b l)
 cons a HNil = HCons a HNil
 cons a (HCons b l) = HCons a (HCons b l)
 
