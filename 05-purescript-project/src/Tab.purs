@@ -49,7 +49,7 @@ createColumn colTypeTag id name = Col
 -- TODO Removes all rows for now to get it working at all...
 addColumn :: forall a b l. Tab a l -> Col b -> Tab b (HList a l)
 addColumn (Tab tab) (Col col) = Tab
-  { columns: (HList.cons (createColumn col.kind col.id col.name) tab.columns)
+  { columns: HNil
   , rows: Nil
   }
 
@@ -68,8 +68,8 @@ newtype Tab head tail = Tab
   , rows :: List (HList (Cell head) (Cells tail)) -- something like (ToRowMap head) (ToRowMap tail) ?
   }
 
--- instance showTab :: (Nat size, Show cols, HList cols, Show cells) => Show (Tab cols cells) where
---   show (Tab tab) = "Tab(Columns(" <> (show (map (show) tab.columns)) <> "), Rows(" <> (show tab.rows) <> ")"
+instance showTab :: Show (Tab head tail) where
+  show (Tab tab) = "Tab(Columns(" <> "..." <> "), Rows(" <> "..." <> ")"
 
 empty :: Tab _ _
 empty = Tab
