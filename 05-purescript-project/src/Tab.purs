@@ -47,9 +47,9 @@ createColumn colTypeTag id name = Col
   }
 
 -- TODO Removes all rows for now to get it working at all...
-addColumn :: forall a b l. Tab a l -> Col b -> Tab b (HList a l)
-addColumn (Tab tab) (Col col) = Tab
-  { columns: HNil
+addColumn :: forall a b l. Tab a l -> Col b -> Tab (Col b) (HList a l)
+addColumn (Tab tab) col = Tab
+  { columns: HList.cons col tab.columns
   , rows: Nil
   }
 
@@ -64,7 +64,7 @@ instance convAny :: Conv a where
   conv x = Just x
 
 newtype Tab head tail = Tab
-  { columns :: HList (Col head) tail
+  { columns :: HList head tail
   , rows :: List (HList (Cell head) (Cells tail)) -- something like (ToRowMap head) (ToRowMap tail) ?
   }
 
