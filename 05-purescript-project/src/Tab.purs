@@ -50,8 +50,11 @@ createColumn colTypeTag id name = Col
 addColumn :: forall a b l. Tab a l -> Col b -> Tab (Col b) (HList a l)
 addColumn (Tab tab) col = Tab
   { columns: HList.cons col tab.columns
-  , rows: Nil
+  , rows: Nil -- (map (\row -> HList.cons (mkCell col) row) (tab.rows))
   }
+
+mkCell :: forall a. Col a -> Cell a
+mkCell col = Nothing
 
 type Cell a = Maybe a
 
