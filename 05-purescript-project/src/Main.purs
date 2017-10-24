@@ -12,7 +12,7 @@ import Tab (empty) as Tab
 
 main :: forall e. Eff (console :: CONSOLE | e) Unit
 main = do
-  log (show (addColumn Tab.empty column1))
+  log (show (addColumn column1 Tab.empty))
 
 column1 :: Col String
 column1 = createColumn "" 1 "first"

@@ -47,13 +47,20 @@ createColumn colTypeTag id name = Col
   }
 
 -- TODO Removes all rows for now to get it working at all...
-addColumn :: forall a b l. Tab a l -> Col b -> Tab (Col b) (HList a l)
-addColumn (Tab tab) col = Tab
-  { columns: HList.cons col tab.columns
-  , rows: Nil -- (map (\row -> HList.cons (mkCell col) row) (tab.rows))
+-- addColumn :: forall a b l. Tab a l -> Col b -> Tab (Col b) (HList a l)
+addColumn :: forall ch ct rh rt b. ColType b => Col b -> Tab ch ct rh rt -> Tab (Col b) (HList ch ct) (Cell b) (HList rh rt)
+addColumn (Col col) (Tab tab) = Tab
+  { columns: HList.cons (Col col) tab.columns
+  , rows: Nil -- (map (\row -> HList.cons (mkCell col) row) tab.rows)
   }
 
-mkCell :: forall a. Col a -> Cell a
+-- mappedRow :: forall h1 t1 h2 t2. HList h1 t1 -> HList h2 t2
+mappedRow :: forall a. ColType a => HList (Col a) _ -> HList (Cell a) _
+mappedRow (HNil) = HNil
+mappedRow (HCons (Col x) l) = HCons (mkCell x) l
+
+-- The problem lies in rows should get just the "kind" of Col. How can we get it out of a Col?
+mkCell :: forall a. { id :: Int, name :: String, kind :: a } -> Cell a
 mkCell col = Nothing
 
 type Cell a = Maybe a
@@ -66,15 +73,15 @@ class Conv a where
 instance convAny :: Conv a where
   conv x = Just x
 
-newtype Tab head tail = Tab
+newtype Tab head tail rowHead rowTail = Tab
   { columns :: HList head tail
-  , rows :: List (HList (Cell head) (Cells tail)) -- something like (ToRowMap head) (ToRowMap tail) ?
+  , rows :: List (HList (Cell rowHead) (Cells rowTail)) -- something like (ToRowMap head) (ToRowMap tail) ?
   }
 
-instance showTab :: Show (Tab head tail) where
+instance showTab :: Show (Tab head tail rowHead rowTail) where
   show (Tab tab) = "Tab(Columns(" <> "..." <> "), Rows(" <> "..." <> ")"
 
-empty :: Tab _ _
+empty :: Tab _ _ _ _
 empty = Tab
   { columns : HList.empty
   , rows : Nil
