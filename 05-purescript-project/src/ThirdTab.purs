@@ -1,5 +1,9 @@
 module ThirdTab
   ( class ColT
+  , addColumn
+  , empty
+  , ThirdTab
+  , Col
   ) where
 
 import Data.List
@@ -21,5 +25,5 @@ empty = ThirdTab
   , rows : Nil
   }
 
-addColumn :: forall a. ColT a => Int -> String -> ThirdTab a -> ThirdTab _
-addColumn id name (ThirdTab table) = ThirdTab { cols: table.cols, rows: Nil }
+addColumn :: forall a. ColT a => Int -> String -> ThirdTab _ -> ThirdTab _
+addColumn id name (ThirdTab table) = ThirdTab { cols: Cons (Col {id: id, name: name}) table.cols, rows: Nil }
